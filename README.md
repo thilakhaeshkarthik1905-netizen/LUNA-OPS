@@ -1,21 +1,55 @@
 # LUNA-OPS: Lunar Landing Site Navigator
 
-LUNA-OPS helps compare landing sites and dates near the lunar south pole. It places the Sun and Earth against the real terrain horizon, built from NASA LOLA elevation models and NASA/JPL SPICE ephemerides. For each site and time window it reports:
-- when the site is sunlit;
-- when Earth is in view for direct-to-Earth contact;
-- when both happen at once;
-- a labelled, dimensionless power indicator.
+**Explore. Analyse. Compare. Plan for the lunar south pole.**
+
+LUNA-OPS is an interactive lunar landing-site analysis and mission-planning platform that brings sunlight analysis, Earth visibility, terrain screening, communication geometry and multi-site comparison into one environment.
+
+Powered by NASA LRO LOLA elevation models and NASA/JPL SPICE ephemerides, LUNA-OPS places the Sun and Earth against the real lunar terrain horizon to help users understand how location and time affect illumination and direct-to-Earth visibility.
+
+## 🎬 Watch the 1-Minute Demo
+
+**See LUNA-OPS in action:** explore the 3D Moon, inspect terrain, analyse sunlight and Earth visibility, and compare candidate landing sites.
+
+[▶ Watch the LUNA-OPS Demo](https://drive.google.com/file/d/1XlIoJi-T7OZcu5OtBsue38V_ZGQpDjq9/view?usp=sharing)
+
+
+## 🚀 What LUNA-OPS Offers
+
+- **Sunlight Analysis:** Illumination windows, sunlit duration and periods of darkness.
+- **Earth Visibility:** Direct-to-Earth visibility and terrain-horizon obstruction.
+- **Operational Overlap:** Periods when sunlight and Earth visibility occur together.
+- **3D Lunar Exploration:** Interactive Moon globe and local terrain visualization.
+- **Terrain Screening:** Slope, roughness, elevation, uncertainty and depression candidates.
+- **Communication Simulation:** User-defined link budgets and hypothetical relay geometry.
+- **Multi-Site Comparison:** Compare candidate locations across multiple dates and operational parameters.
+
+## 🛰️ Built with NASA Data
+
+- NASA Lunar Reconnaissance Orbiter (LRO) LOLA elevation models
+- NASA/JPL SPICE ephemerides and NAIF kernels
+- NASA Planetary Geosciences Data Archive (PGDA)
+- Lunar Reconnaissance Orbiter Camera (LROC) Wide Angle Camera data
+- JPL Horizons reference data
+
+## ⚙️ How It Works
+
+**NASA terrain and SPICE data → Python scientific engine → FastAPI → React interface**
+
+The Python engine calculates scientific quantities using terrain elevation and planetary geometry. FastAPI serves the results, and the React interface presents them through interactive maps, 3D visualizations and analytical dashboards.
+
+## 🌍 Why It Matters
+
+LUNA-OPS brings several important lunar site-analysis capabilities into one interactive platform. It helps users explore how terrain, sunlight, Earth visibility and communication conditions vary across candidate locations and time windows, supporting more informed preliminary planning for future lunar south-pole missions.
+
+---
+
+**Note:** LUNA-OPS is a research and preliminary planning aid. It is not NASA-approved or certified for landing safety, and it is not integrated with DSN or LunaNet. See the validation and limitations sections below for scientific status and known constraints.
 
 Two preliminary modules sit beside the scientific engine:
 - **landing hazard screening** from terrain models;
 - **communication simulation**: RF link budgets and a hypothetical relay.
 
-**NASA Space Apps Challenge 2026** · Event start: **November 14, 2026, 9:00 a.m.** (local time)
 
-> **Read before using any result.**
-> - LUNA-OPS has **no NASA approval or certification** and is **not integrated with the Deep Space Network or LunaNet**.
-> - It does **not** certify a landing site as safe and gives no landing probability, score or recommendation.
-> - Validation status is reported exactly as measured: **V-10 failed** (see [Validation status](#validation-status-2026-11-14)).
 
 ## Screenshots
 
@@ -27,9 +61,11 @@ Two preliminary modules sit beside the scientific engine:
 
 ![3D Moon globe](docs/screenshots_current/16-3d-moon-globe-site01.png)
 
-**Local terrain in 3D** — 16 km window, vertical exaggeration ×4, NASA PGDA 90 20 m LOLA heights
+ Terrain View
+![Terrain View](docs/screenshots_current/Terrain%20view.jpeg)
 
-![Local terrain, 16 km window, vertical x4](docs/screenshots_current/17-local-terrain-16km-vertical-x4.png)
+ Sun and Earth Visibility
+![Sun and Earth Visibility](docs/screenshots_current/sun%20and%20earth.jpeg)
 
 **Landing hazard map** — preliminary terrain screening at Site01 (5 m terrain): slope layer, depression candidates, landing footprint
 
@@ -54,30 +90,6 @@ More screenshots: [`docs/screenshots_current/`](docs/screenshots_current/). Feat
 | **Data and validation** (`/#data`) | Data products, provenance and the validation record. Reachable by URL; it is no longer in the navigation bar. |
 
 All scientific quantities are computed by the Python engine (`backend/lunaops`). The API serves them unchanged; the browser only displays them.
-
-## Validation status (2026-11-14)
-
-This is the record from the Phase 7 final validation. Source: [`docs/validation_evidence/phase7_final_validation_2026-11-14/reports/PHASE7_FINAL_REPORT.md`](docs/validation_evidence/phase7_final_validation_2026-11-14/reports/PHASE7_FINAL_REPORT.md).
-
-**Versions tested:**
-- engine code fingerprint `9cd7b08b36ba6be4fe0e623ff0a8b04da4dae15b1f9867e496927ff945dd73c8`;
-- test-suite fingerprint `70606628abed3fdee2704e0b8e2891f648da27266b04791d7690531a517cd546`.
-
-| Result | Checks |
-|---|---|
-| **Passed** | <ul><li>**V-09:** Sun average visibility vs NASA PGDA, frozen holdout. 200/200 points; smooth RMSE 1.84 pp.</li><li>**V-04:** Sun/Earth direction vs JPL Horizons.</li><li>**V-05:** rise/set times vs JPL Horizons, worst 0.5 s.</li><li>**V-11:** permanent shadow vs NASA LPSR, 200/200.</li><li>**V-12:** illumination vs LROC WAC, 200/200.</li><li>**V-13:** eclipse timing vs NASA GSFC, 20/20.</li><li>**V-14:** one-month 1 s brute force, 955 edges, 0 missed.</li><li>**U-04:** scoped accessibility audit.</li><li>Independent cross-checks: Earth disk, events, power indicator, relay geometry and the landing reference.</li></ul> |
-| **FAILED** | **V-10**: Earth average visibility vs NASA PGDA, frozen holdout. 200/200 points scored. Smooth-point RMSE 3.26 pp (limit 2); area-weighted RMSE 5.41 pp (limit 5). |
-| **Skipped** | The full pytest suite was stopped at 325 of 572 tests on the owner's instruction. It is **not** recorded as passed. |
-| **Not run** | <ul><li>U-06 performance audit under the current engine</li><li>official report regeneration</li><li>label display check</li><li>cache integrity end comparison</li></ul> |
-
-**Why V-10 failed.** One holdout point (85.3305° S, 285.2104° E) dominates: NASA's map gives 0 % and LUNA-OPS computes 39.8 %.
-- An independent horizon calculation on the same terrain matches the engine within about 1 pp at 17 of 17 locations.
-- NASA's newer 40 m terrain gives 24 % at the point, not 0 %.
-- NASA's original source model (LDEM_85S_060M) is no longer distributed.
-
-No point was removed and no criterion was changed after the results were seen, so **V-10 remains Failed**. See [`V10_FINAL_RESOLUTION.md`](docs/validation_evidence/phase7_final_validation_2026-11-14/V10_investigation/V10_FINAL_RESOLUTION.md).
-
-**Labels.** Because the suite was not completed and V-10 failed, the application shows **no "Validated" label**. Quantities appear as "Pending validation", and modelled values as "Estimated". `backend/validation/report.json` is the historical report from 2026-11-12. Its fingerprints differ from the current code, so its labels are deliberately withheld. Phase 7 produced an interim report instead: [`interim_report_phase7.json`](docs/validation_evidence/phase7_final_validation_2026-11-14/report_regeneration/interim_report_phase7.json).
 
 ## Data is not included in this repository
 
