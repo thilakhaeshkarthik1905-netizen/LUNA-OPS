@@ -59,7 +59,7 @@ Two preliminary modules sit beside the scientific engine:
 
 **3D Moon globe** — south polar view with the selected site (globe imagery is for orientation; elevations come only from LOLA terrain)
 
-![3D Moon globe](docs/screenshots_current/16-3d-moon-globe-site01.png)
+![3D Moon globe](docs/screenshots_current/3D%20Moon%20globe.jpeg)
 
  Terrain View
 ![Terrain View](docs/screenshots_current/Terrain%20view.jpeg)
